@@ -2,7 +2,7 @@
 
 namespace Shields.DataStructures
 {
-    public class PairingHeapHandle<TKey, TValue> : IPriorityQueueHandle<TKey, TValue>
+    internal class PairingHeapHandle<TKey, TValue> : IPriorityQueueHandle<TKey, TValue>
     {
         internal readonly long pairingHeapId;
         internal bool isActive;

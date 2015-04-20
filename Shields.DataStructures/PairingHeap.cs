@@ -6,7 +6,7 @@ using System.Threading;
 namespace Shields.DataStructures
 {
     [DebuggerDisplay("Count = {Count}")]
-    public class PairingHeap<TKey, TValue> : IPriorityQueue<TKey, TValue, PairingHeapHandle<TKey, TValue>>
+    public class PairingHeap<TKey, TValue> : IPriorityQueue<TKey, TValue>
     {
         private static long nextId = 0;
         private readonly long id;
@@ -40,12 +40,12 @@ namespace Shields.DataStructures
             get { return count; }
         }
 
-        public IEnumerable<PairingHeapHandle<TKey, TValue>> Handles
+        public IEnumerable<IPriorityQueueHandle<TKey, TValue>> Handles
         {
             get { return GetHandles(root); }
         }
 
-        public PairingHeapHandle<TKey, TValue> GetMin()
+        public IPriorityQueueHandle<TKey, TValue> GetMin()
         {
             if (count == 0)
             {
@@ -54,71 +54,73 @@ namespace Shields.DataStructures
             return root;
         }
 
-        public PairingHeapHandle<TKey, TValue> Add(TKey key, TValue value)
+        public IPriorityQueueHandle<TKey, TValue> Add(TKey key, TValue value)
         {
             var handle = new PairingHeapHandle<TKey, TValue>(id, key, value);
             Add(handle);
             return handle;
         }
 
-        public void Remove(PairingHeapHandle<TKey, TValue> handle)
+        public void Remove(IPriorityQueueHandle<TKey, TValue> handle)
         {
             if (handle == null)
             {
                 throw new ArgumentNullException("handle");
             }
-            if (handle.pairingHeapId != id)
+            var h = handle as PairingHeapHandle<TKey, TValue>;
+            if (h == null || h.pairingHeapId != id)
             {
-                throw new InvalidOperationException("Tried to remove a handle from a different PairingHeap.");
+                throw new InvalidOperationException("Tried to remove a handle from a different priority queue than that which created it.");
             }
-            if (!handle.IsActive)
+            if (!h.IsActive)
             {
                 throw new InvalidOperationException("Tried to remove an inactive handle.");
             }
             count--;
-            if (handle == root)
+            if (h == root)
             {
                 root = DeleteRoot(root);
             }
             else
             {
-                SpliceOut(handle);
-                root = Pair(root, DeleteRoot(handle));
+                SpliceOut(h);
+                root = Pair(root, DeleteRoot(h));
             }
-            handle.isActive = false;
-            handle.left = null;
-            handle.right = null;
-            handle.firstChild = null;
+            h.isActive = false;
+            h.left = null;
+            h.right = null;
+            h.firstChild = null;
         }
 
-        public void UpdateKey(PairingHeapHandle<TKey, TValue> handle, TKey key)
+        public void UpdateKey(IPriorityQueueHandle<TKey, TValue> handle, TKey key)
         {
             if (handle == null)
             {
                 throw new ArgumentNullException("handle");
             }
-            if (handle.pairingHeapId != id)
+            var h = handle as PairingHeapHandle<TKey, TValue>;
+            if (h == null || h.pairingHeapId != id)
             {
-                throw new InvalidOperationException("Tried to update the key of a handle from a different PairingHeap.");
+                throw new InvalidOperationException("Tried to update the key of a handle of a different priority queue than that which created it.");
             }
-            if (!handle.IsActive)
+            if (!h.IsActive)
             {
                 throw new InvalidOperationException("Tried to update the key of an inactive handle.");
             }
-            if (comparer.Compare(key, handle.Key) <= 0)
+            if (comparer.Compare(key, h.Key) <= 0)
             {
-                handle.key = key;
-                if (handle != root)
+                h.key = key;
+                if (h != root)
                 {
-                    SpliceOut(handle);
-                    root = Pair(root, handle);
+                    SpliceOut(h);
+                    root = Pair(root, h);
                 }
             }
             else
             {
-                Remove(handle);
-                handle.key = key;
-                Add(handle);
+                Remove(h);
+                h.key = key;
+                Add(h);
             }
         }
 

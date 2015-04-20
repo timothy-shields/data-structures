@@ -8,9 +8,7 @@ namespace Shields.DataStructures
     /// </summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
-    /// <typeparam name="THandle">The handle type.</typeparam>
-    public interface IPriorityQueue<TKey, TValue, THandle>
-        where THandle : IPriorityQueueHandle<TKey, TValue>
+    public interface IPriorityQueue<TKey, TValue>
     {
         /// <summary>
         /// The comparer that defines the order of keys.
@@ -25,7 +23,7 @@ namespace Shields.DataStructures
         /// <summary>
         /// The collection of handles in the priority queue in an arbitrary order.
         /// </summary>
-        IEnumerable<THandle> Handles { get; }
+        IEnumerable<IPriorityQueueHandle<TKey, TValue>> Handles { get; }
 
         /// <summary>
         /// Gets a handle with a minimal key.
@@ -33,7 +31,7 @@ namespace Shields.DataStructures
         /// </summary>
         /// <returns>A handle with a minimal key.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the priority queue is empty.</exception>
-        THandle GetMin();
+        IPriorityQueueHandle<TKey, TValue> GetMin();
 
         /// <summary>
         /// Adds a key/value pair to the priority queue.
@@ -41,7 +39,7 @@ namespace Shields.DataStructures
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
         /// <returns>The handle for the inserted key/value pair.</returns>
-        THandle Add(TKey key, TValue value);
+        IPriorityQueueHandle<TKey, TValue> Add(TKey key, TValue value);
 
         /// <summary>
         /// Removes a key/value pair from the priority queue.
@@ -50,7 +48,7 @@ namespace Shields.DataStructures
         /// <param name="handle">The handle for the key/value pair to remove.</param>
         /// <exception cref="System.ArgumentNullException">Thrown if the handle is null.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if the handle is not active or if the handle belongs to a different priority queue.</exception>
-        void Remove(THandle handle);
+        void Remove(IPriorityQueueHandle<TKey, TValue> handle);
 
         /// <summary>
         /// Updates the key for a key/value pair that is currently in the priority queue.
@@ -60,6 +58,6 @@ namespace Shields.DataStructures
         /// <param name="key">The current key is replaced with this value.</param>
         /// <exception cref="System.ArgumentNullException">Thrown if the handle is null.</exception>
         /// <exception cref="System.InvalidOperationException">Thrown if the handle is not active or if the handle belongs to a different priority queue.</exception>
-        void UpdateKey(THandle handle, TKey key);
+        void UpdateKey(IPriorityQueueHandle<TKey, TValue> handle, TKey key);
     }
 }
