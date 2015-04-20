@@ -1,0 +1,1 @@
+call nuget pack Shields.DataStructures\Shields.DataStructures.csproj -IncludeReferencedProjects -Verbosity detailed
