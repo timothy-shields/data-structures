@@ -1,1 +1,1 @@
-call nuget pack Shields.DataStructures\Shields.DataStructures.csproj -IncludeReferencedProjects -Verbosity detailed
+call nuget pack Shields.DataStructures\Shields.DataStructures.csproj -IncludeReferencedProjects -Prop Configuration=Release -Verbosity detailed
