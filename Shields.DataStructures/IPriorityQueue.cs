@@ -29,9 +29,8 @@ namespace Shields.DataStructures
         /// Gets a handle with a minimal key.
         /// If the priority queue is empty, an <see cref="InvalidOperationException"/> is thrown.
         /// </summary>
-        /// <returns>A handle with a minimal key.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the priority queue is empty.</exception>
-        IPriorityQueueHandle<TKey, TValue> GetMin();
+        IPriorityQueueHandle<TKey, TValue> Min { get; }
 
         /// <summary>
         /// Adds a key/value pair to the priority queue.

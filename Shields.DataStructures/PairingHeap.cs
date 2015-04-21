@@ -73,13 +73,16 @@ namespace Shields.DataStructures
         /// </summary>
         /// <returns>A handle with a minimal key.</returns>
         /// <exception cref="System.InvalidOperationException">Thrown if the priority queue is empty.</exception>
-        public IPriorityQueueHandle<TKey, TValue> GetMin()
+        public IPriorityQueueHandle<TKey, TValue> Min
         {
-            if (count == 0)
+            get
             {
-                throw new InvalidOperationException("PairingHeap is empty.");
+                if (count == 0)
+                {
+                    throw new InvalidOperationException("PairingHeap is empty.");
+                }
+                return root;
             }
-            return root;
         }
 
         /// <summary>
