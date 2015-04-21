@@ -27,7 +27,7 @@ interface IPriorityQueueHandle<TKey, TValue>
 ```
 
 ## Implementation
-[`PairingHeap<TKey, TValue>`](http://en.wikipedia.org/wiki/Pairing_heap) is an efficient implementation of `IPriorityQueue<TKey, TValue>`. If the current number of items is N, it has O(N) space complexity and the following time complexity for its methods:
+[`PairingHeap<TKey, TValue>`](http://en.wikipedia.org/wiki/Pairing_heap) is an efficient implementation of `IPriorityQueue<TKey, TValue>`.
 
 <table>
   <tr><th>Space Complexity</th></tr>
