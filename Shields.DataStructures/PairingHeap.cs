@@ -5,19 +5,32 @@ using System.Threading;
 
 namespace Shields.DataStructures
 {
+    /// <summary>
+    /// A mutable pairing heap data structure. http://en.wikipedia.org/wiki/Pairing_heap
+    /// </summary>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
     [DebuggerDisplay("Count = {Count}")]
     public class PairingHeap<TKey, TValue> : IPriorityQueue<TKey, TValue>
     {
         private static long nextId = 0;
         private readonly long id;
-        private PairingHeapHandle<TKey, TValue> root;
-        private int count;
         private readonly IComparer<TKey> comparer;
 
+        private PairingHeapHandle<TKey, TValue> root;
+        private int count;
+
+        /// <summary>
+        /// Constructs an empty pairing heap using the default comparer for the key type.
+        /// </summary>
         public PairingHeap() : this(Comparer<TKey>.Default)
         {
         }
 
+        /// <summary>
+        /// Constructs an empty pairing heap using the specified comparer for the key type.
+        /// </summary>
+        /// <param name="comparer">The comparer for the key type.</param>
         public PairingHeap(IComparer<TKey> comparer)
         {
             if (comparer == null)
@@ -25,26 +38,41 @@ namespace Shields.DataStructures
                 throw new ArgumentNullException("comparer");
             }
             this.id = Interlocked.Increment(ref nextId);
+            this.comparer = comparer;
             this.root = null;
             this.count = 0;
-            this.comparer = comparer;
         }
 
+        /// <summary>
+        /// The comparer that defines the order of keys.
+        /// </summary>
         public IComparer<TKey> Comparer
         {
             get { return comparer; }
         }
 
+        /// <summary>
+        /// The number of items in the priority queue.
+        /// </summary>
         public int Count
         {
             get { return count; }
         }
 
+        /// <summary>
+        /// The collection of handles in the priority queue in an arbitrary order.
+        /// </summary>
         public IEnumerable<IPriorityQueueHandle<TKey, TValue>> Handles
         {
             get { return GetHandles(root); }
         }
 
+        /// <summary>
+        /// Gets a handle with a minimal key.
+        /// If the priority queue is empty, an <see cref="InvalidOperationException"/> is thrown.
+        /// </summary>
+        /// <returns>A handle with a minimal key.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown if the priority queue is empty.</exception>
         public IPriorityQueueHandle<TKey, TValue> GetMin()
         {
             if (count == 0)
@@ -54,6 +82,12 @@ namespace Shields.DataStructures
             return root;
         }
 
+        /// <summary>
+        /// Adds a key/value pair to the priority queue.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>The handle for the inserted key/value pair.</returns>
         public IPriorityQueueHandle<TKey, TValue> Add(TKey key, TValue value)
         {
             var handle = new PairingHeapHandle<TKey, TValue>(id, key, value);
@@ -61,6 +95,13 @@ namespace Shields.DataStructures
             return handle;
         }
 
+        /// <summary>
+        /// Removes a key/value pair from the priority queue.
+        /// If the given handle is not active, an <see cref="InvalidOperationException"/> is thrown.
+        /// </summary>
+        /// <param name="handle">The handle for the key/value pair to remove.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown if the handle is null.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if the handle is not active or if the handle belongs to a different priority queue.</exception>
         public void Remove(IPriorityQueueHandle<TKey, TValue> handle)
         {
             if (handle == null)
@@ -92,6 +133,14 @@ namespace Shields.DataStructures
             h.firstChild = null;
         }
 
+        /// <summary>
+        /// Updates the key for a key/value pair that is currently in the priority queue.
+        /// If the given handle is not active, an <see cref="InvalidOperationException"/> is thrown.
+        /// </summary>
+        /// <param name="handle">The handle for the key/value pair.</param>
+        /// <param name="key">The current key is replaced with this value.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown if the handle is null.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if the handle is not active or if the handle belongs to a different priority queue.</exception>
         public void UpdateKey(IPriorityQueueHandle<TKey, TValue> handle, TKey key)
         {
             if (handle == null)
